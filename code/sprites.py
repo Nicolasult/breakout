@@ -1,5 +1,6 @@
 import pygame
 from settings import *
+from random import choice
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, groups):
@@ -37,3 +38,22 @@ class Player(pygame.sprite.Sprite):
         self.pos.x += self.direction.x * self.speed * dt
         self.rect.x = round(self.pos.x)
         self.screen_constraint()
+
+class Ball(pygame.sprite.Sprite):
+    def __init__(self, groups, player):
+        super().__init__(groups)
+
+        # collision objects
+        self.player = Player
+
+        # graphics setup
+        self.image = pygame.image.load("graphics/other/ball.png").convert_alpha()
+
+        # position setup
+        self.rect = self.image.get_rect(midbottom = player.rect.midtop)
+        self.direction = pygame.math.Vector2()
+        self.pos = pygame.math.Vector2(choice(1, -1), -1)
+        self.speed = 400
+
+        # active
+        self.active = False
