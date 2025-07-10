@@ -42,6 +42,9 @@ class Game:
                     pygame.quit()
                     sys.exit()
 
+            # update the game
+            self.all_sprites.update(dt)
+
             # draw the frame
             self.display_surface.blit(self.bg, (0, 0))
             self.all_sprites.draw(self.display_surface)
