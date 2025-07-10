@@ -9,6 +9,17 @@ class Game:
         pygame.init()
         self.display_surface = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
         pygame.display.set_caption('Breakout')
+
+        # background
+        self.bg = self.create_bg()
+
+    def create_bg(self):
+        bg_original = pygame.image.load("graphics/other/bg.png").convert()
+        scale_factor = WINDOW_HEIGHT / bg_original.get_height()
+        scaled_width = bg_original.get_width() * scale_factor
+        scaled_height = bg_original.get_height() * scale_factor
+        scaled_bg = pygame.transform.scale(bg_original, (scaled_width, scaled_height))
+        return scaled_bg
  
     def run(self):
         last_time = time.time()
@@ -23,6 +34,9 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+
+            # draw the frame
+            self.display_surface.blit(self.bg, (0, 0))
  
             # update window
             pygame.display.update()
