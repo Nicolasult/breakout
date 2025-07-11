@@ -35,7 +35,7 @@ class Player(pygame.sprite.Sprite):
             self.pos.x = self.rect.x
     
     def update(self, dt):
-        self.old_rect = self.rect.copyt()
+        self.old_rect = self.rect.copy()
         self.input()
         self.pos.x += self.direction.x * self.speed * dt
         self.rect.x = round(self.pos.x)
@@ -100,7 +100,16 @@ class Ball(pygame.sprite.Sprite):
                         self.pos.x = self.rect.x
                         self.direction.x *= -1
             if direction == "vertical":
-                pass
+                for sprite in overlap_sprites:
+                    if self.rect.bottom >= sprite.rect.top and self.old_rect.bottom <= sprite.old_rect.top:
+                        self.rect.bottom = sprite.rect.top
+                        self.pos.y = self.rect.y
+                        self.direction.y *= -1
+
+                    if self.rect.top <= sprite.rect.bottom and self.old_rect.top >= sprite.old_rect.bottom:
+                        self.rect.top = sprite.rect.bottom
+                        self.pos.y = self.rect.y
+                        self.direction.y *= -1
 
     def update(self, dt):
         if self.active:
@@ -119,7 +128,7 @@ class Ball(pygame.sprite.Sprite):
             # vertical movement + collision
             self.pos.y += self.direction.y * self.speed * dt
             self.rect.y = round(self.pos.y)
-            self.collision("horizontal")
+            self.collision("vertical")
             self.window_collision("vertical")
         else:
             self.rect.midbottom = self.player.rect.midtop
