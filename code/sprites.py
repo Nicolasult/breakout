@@ -51,8 +51,8 @@ class Ball(pygame.sprite.Sprite):
 
         # position setup
         self.rect = self.image.get_rect(midbottom = player.rect.midtop)
-        self.direction = pygame.math.Vector2()
-        self.pos = pygame.math.Vector2(choice((1, -1)), -1)
+        self.pos = pygame.math.Vector2(self.rect.topleft)
+        self.direction = pygame.math.Vector2(choice((1, -1)), -1)
         self.speed = 400
 
         # active
@@ -60,7 +60,11 @@ class Ball(pygame.sprite.Sprite):
 
     def update(self, dt):
         if self.active:
-            pass
+            if self.direction.magnitude() != 0:
+                self.direction = self.direction.normalize()
+
+            self.pos += self.direction * self.speed * dt
+            self.rect.topleft = (round(self.pos.x), round(self.pos.y))
         else:
             self.rect.midbottom = self.player.rect.midtop
             self.pos = pygame.math.Vector2(self.rect.topleft)
