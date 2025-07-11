@@ -44,7 +44,7 @@ class Ball(pygame.sprite.Sprite):
         super().__init__(groups)
 
         # collision objects
-        self.player = Player
+        self.player = player
 
         # graphics setup
         self.image = pygame.image.load("graphics/other/ball.png").convert_alpha()
@@ -52,8 +52,15 @@ class Ball(pygame.sprite.Sprite):
         # position setup
         self.rect = self.image.get_rect(midbottom = player.rect.midtop)
         self.direction = pygame.math.Vector2()
-        self.pos = pygame.math.Vector2(choice(1, -1), -1)
+        self.pos = pygame.math.Vector2(choice((1, -1)), -1)
         self.speed = 400
 
         # active
         self.active = False
+
+    def update(self, dt):
+        if self.active:
+            pass
+        else:
+            self.rect.midbottom = self.player.rect.midtop
+            self.pos = pygame.math.Vector2(self.rect.topleft)
