@@ -16,11 +16,12 @@ class Game:
 
         # sprite group setup
         self.all_sprites = pygame.sprite.Group()
+        self.block_sprites = pygame.sprite.Group()
 
         # setup
         self.player = Player(self.all_sprites)
-        self.ball = Ball(self.all_sprites, self.player)
         self.stage_setup()
+        self.ball = Ball(self.all_sprites, self.player, self.block_sprites)
 
     def create_bg(self):
         bg_original = pygame.image.load("graphics/other/bg.png").convert()
@@ -34,10 +35,11 @@ class Game:
         # cycle through all rows and columns of BLOCK_MAP
         for row_index, row in enumerate(BLOCK_MAP):
             for col_index, col in enumerate(row):
-                # fin the x and y position for each individual block
-                x = col_index * (BLOCK_WIDTH + GAP_SIZE) + GAP_SIZE // 2
-                y = row_index * (BLOCK_HEIGHT + GAP_SIZE) + GAP_SIZE // 2
-                Block(col, (x, y), self.all_sprites)
+                if col != " ":
+                    # fin the x and y position for each individual block
+                    x = col_index * (BLOCK_WIDTH + GAP_SIZE) + GAP_SIZE // 2
+                    y = row_index * (BLOCK_HEIGHT + GAP_SIZE) + GAP_SIZE // 2
+                    Block(col, (x, y), [self.all_sprites, self.block_sprites])
 
  
     def run(self):

@@ -42,11 +42,12 @@ class Player(pygame.sprite.Sprite):
         self.screen_constraint()
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, groups, player):
+    def __init__(self, groups, player, blocks):
         super().__init__(groups)
 
         # collision objects
         self.player = player
+        self.blocks = blocks
 
         # graphics setup
         self.image = pygame.image.load("graphics/other/ball.png").convert_alpha()
@@ -82,7 +83,7 @@ class Ball(pygame.sprite.Sprite):
 
     def collision(self, direction):
         # find overlapping objects
-        overlap_sprites = []
+        overlap_sprites = pygame.sprite.spritecollide(self, self.blocks, False)
 
         if self.rect.colliderect(self.player.rect):
             overlap_sprites.append(self.player)
@@ -137,5 +138,6 @@ class Ball(pygame.sprite.Sprite):
 class Block(pygame.sprite.Sprite):
     def __init__(self, block_type, pos, groups):
         super().__init__(groups)
-        self.image = pygame.Surface((BLOCK_HEIGHT, BLOCK_WIDTH))
+        self.image = pygame.Surface((BLOCK_WIDTH, BLOCK_HEIGHT))
         self.rect = self.image.get_rect(topleft = pos)
+        self.old_rect = self.rect.copy()
