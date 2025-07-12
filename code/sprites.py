@@ -9,7 +9,6 @@ class Player(pygame.sprite.Sprite):
         # setup
         self.surfacemaker = surfacemaker
         self.image = surfacemaker.get_surf("player", (WINDOW_WIDTH // 10, WINDOW_HEIGHT // 20))
-        self.image.fill("red")
 
         # position
         self.rect = self.image.get_rect(midbottom = (WINDOW_WIDTH // 2, WINDOW_HEIGHT - 20))
@@ -147,7 +146,7 @@ class Block(pygame.sprite.Sprite):
     def __init__(self, block_type, pos, groups, surfacemaker):
         super().__init__(groups)
         self.surfacemaker = surfacemaker
-        self.image = self.surfacemaker.get_surf(block_type, (BLOCK_WIDTH, BLOCK_HEIGHT))
+        self.image = self.surfacemaker.get_surf("red", (BLOCK_WIDTH, BLOCK_HEIGHT))
         self.rect = self.image.get_rect(topleft = pos)
         self.old_rect = self.rect.copy()
 
