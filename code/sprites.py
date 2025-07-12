@@ -3,10 +3,10 @@ from settings import *
 from random import choice
 
 class Upgrade(pygame.sprite.Sprite):
-    def __init__(self, , pos, upgrade_type, groups):
+    def __init__(self, pos, upgrade_type, groups):
         super().__init__(groups)
         self.upgrade_type = upgrade_type
-        self.image = pygame.image.load(f"graphics/upgrades.{upgrade_type}").convert_alpha()
+        self.image = pygame.image.load(f"graphics/upgrades/{upgrade_type}.png").convert_alpha()
         self.rect = self.image.get_rect(midtop = pos)
         
         self.pos = pygame.math.Vector2(self.rect.topleft)
@@ -163,7 +163,7 @@ class Ball(pygame.sprite.Sprite):
             self.pos = pygame.math.Vector2(self.rect.topleft)
 
 class Block(pygame.sprite.Sprite):
-    def __init__(self, block_type, pos, groups, surfacemaker):
+    def __init__(self, block_type, pos, groups, surfacemaker, create_upgrade):
         super().__init__(groups)
         self.surfacemaker = surfacemaker
         self.image = self.surfacemaker.get_surf(COLOR_LEGEND[block_type], (BLOCK_WIDTH, BLOCK_HEIGHT))
@@ -172,6 +172,9 @@ class Block(pygame.sprite.Sprite):
 
         # damage information
         self.health = int(block_type)
+
+        # upgrade
+        self.create_upgrade = create_upgrade
     
     def get_damage(self, amount):
         self.health -= amount
@@ -179,5 +182,6 @@ class Block(pygame.sprite.Sprite):
         if self.health > 0:
             self.image = self.surfacemaker.get_surf(COLOR_LEGEND[str(self.health)], (BLOCK_WIDTH, BLOCK_HEIGHT))
         else:
+            self.create_upgrade(self.rect.center)
             self.kill()
 
