@@ -24,6 +24,10 @@ class Game:
         self.stage_setup()
         self.ball = Ball(self.all_sprites, self.player, self.block_sprites)
 
+        # hearts
+        self.heart_surf = pygame.image.load("graphics/other/heart.png").convert_alpha()
+
+
     def create_bg(self):
         bg_original = pygame.image.load("graphics/other/bg.png").convert()
         scale_factor = WINDOW_HEIGHT / bg_original.get_height()
@@ -39,8 +43,13 @@ class Game:
                 if col != " ":
                     # fin the x and y position for each individual block
                     x = col_index * (BLOCK_WIDTH + GAP_SIZE) + GAP_SIZE // 2
-                    y = row_index * (BLOCK_HEIGHT + GAP_SIZE) + GAP_SIZE // 2
+                    y = TOP_OFFSET + row_index * (BLOCK_HEIGHT + GAP_SIZE) + GAP_SIZE // 2
                     Block(col, (x, y), [self.all_sprites, self.block_sprites], self.surfacemaker)
+
+    def display_hearts(self):
+        for i in range(self.player.hearts):
+            x = 2 + i * (self.heart_surf.get_width() + 2)
+            self.display_surface.blit(self.heart_surf, (x, 4))
 
     def run(self):
         last_time = time.time()
@@ -52,7 +61,7 @@ class Game:
  
             # event loop
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT or self.player.hearts <= 0:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
@@ -65,6 +74,7 @@ class Game:
             # draw the frame
             self.display_surface.blit(self.bg, (0, 0))
             self.all_sprites.draw(self.display_surface)
+            self.display_hearts()
  
             # update window
             pygame.display.update()

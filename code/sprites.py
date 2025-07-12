@@ -17,6 +17,8 @@ class Player(pygame.sprite.Sprite):
         self.pos = pygame.math.Vector2(self.rect.topleft)
         self.speed = 300
 
+        self.hearts = 3
+
     def input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RIGHT]:
@@ -80,6 +82,7 @@ class Ball(pygame.sprite.Sprite):
             if self.rect.bottom > WINDOW_HEIGHT:
                 self.active = False
                 self.direction.y = -1
+                self.player.hearts -= 1
 
     def collision(self, direction):
         # find overlapping objects
