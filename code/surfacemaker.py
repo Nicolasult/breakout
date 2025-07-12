@@ -20,6 +20,7 @@ class SurfaceMaker:
         
         # create one surface with the graphics with any size
         image = pygame.Surface(size)
+        image.set_colorkey((0, 0, 0))
         sides = self.assets[block_type]
 
         # 4 corners
@@ -49,7 +50,11 @@ class SurfaceMaker:
         scaled_bottom_surf = pygame.transform.scale(sides["bottom"], (bottom_width, sides["bottom"].get_height()))
         image.blit(scaled_bottom_surf, (sides["topleft"].get_width(), size[1] - sides["bottom"].get_height()))
        
-
         # center color
+        center_height = size[1] - (sides["top"].get_height() + sides["bottom"].get_height())
+        center_width = size[0] - (sides["right"].get_width() + sides["left"].get_width())
+        scaler_center = pygame.transform.scale(sides["center"], (center_width, center_height))
+        image.blit(scaler_center, sides["topleft"].get_size())
 
+        # return the image to the blocks or the player
         return image
