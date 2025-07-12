@@ -1,11 +1,11 @@
 import pygame, sys, time
 from settings import *
+from surfacemaker import SurfaceMaker
 from sprites import Player, Ball, Block
  
  
 class Game:
     def __init__(self):
-        
         # general setup
         pygame.init()
         self.display_surface = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
@@ -19,7 +19,8 @@ class Game:
         self.block_sprites = pygame.sprite.Group()
 
         # setup
-        self.player = Player(self.all_sprites)
+        self.surfacemaker = SurfaceMaker()
+        self.player = Player(self.all_sprites, self.surfacemaker)
         self.stage_setup()
         self.ball = Ball(self.all_sprites, self.player, self.block_sprites)
 
@@ -39,9 +40,8 @@ class Game:
                     # fin the x and y position for each individual block
                     x = col_index * (BLOCK_WIDTH + GAP_SIZE) + GAP_SIZE // 2
                     y = row_index * (BLOCK_HEIGHT + GAP_SIZE) + GAP_SIZE // 2
-                    Block(col, (x, y), [self.all_sprites, self.block_sprites])
+                    Block(col, (x, y), [self.all_sprites, self.block_sprites], self.surfacemaker)
 
- 
     def run(self):
         last_time = time.time()
         while True:
