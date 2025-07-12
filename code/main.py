@@ -55,6 +55,11 @@ class Game:
             x = 2 + i * (self.heart_surf.get_width() + 2)
             self.display_surface.blit(self.heart_surf, (x, 4))
 
+    def upgrade_collision(self):
+        overlap_sprites = pygame.sprite.spritecollide(self.player, self.upgrade_sprites, True)
+        for sprite in overlap_sprites:
+            self.player.upgrade(sprite.upgrade_type)
+
     def run(self):
         last_time = time.time()
         while True:
@@ -74,6 +79,7 @@ class Game:
 
             # update the game
             self.all_sprites.update(dt)
+            self.upgrade_collision()
 
             # draw the frame
             self.display_surface.blit(self.bg, (0, 0))

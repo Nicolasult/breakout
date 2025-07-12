@@ -1,6 +1,6 @@
 import pygame
 from settings import *
-from random import choice
+from random import choice, randint
 
 class Upgrade(pygame.sprite.Sprite):
     def __init__(self, pos, upgrade_type, groups):
@@ -52,7 +52,19 @@ class Player(pygame.sprite.Sprite):
         if self.rect.left < 0:
             self.rect.left = 0
             self.pos.x = self.rect.x
-    
+
+    def upgrade(self, upgrade_type):
+        if upgrade_type == "speed":
+            self.speed += 50
+        if upgrade_type == "heart":
+            self.hearts += 1
+        
+        if upgrade_type == "size":
+            new_width = self.rect.width * 1.1
+            self.image = self.surfacemaker.get_surf("player", (new_width, self.rect.height))
+            self.rect = self.image.get_rect(center = self.rect.center)
+            self.pos.x = self.rect.x
+
     def update(self, dt):
         self.old_rect = self.rect.copy()
         self.input()
@@ -182,6 +194,7 @@ class Block(pygame.sprite.Sprite):
         if self.health > 0:
             self.image = self.surfacemaker.get_surf(COLOR_LEGEND[str(self.health)], (BLOCK_WIDTH, BLOCK_HEIGHT))
         else:
-            self.create_upgrade(self.rect.center)
+            if randint(0, 10) < 3:
+                self.create_upgrade(self.rect.center)
             self.kill()
 
