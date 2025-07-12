@@ -24,6 +24,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__(groups)
 
         # setup
+        self.display_surface = pygame.display.get_surface()
         self.surfacemaker = surfacemaker
         self.image = surfacemaker.get_surf("player", (WINDOW_WIDTH // 10, WINDOW_HEIGHT // 20))
 
@@ -35,6 +36,11 @@ class Player(pygame.sprite.Sprite):
         self.speed = 300
 
         self.hearts = 3
+
+        # laser
+        self.laser_amount = 0
+        self.laser_surf = pygame.image.load("graphics/other/laser.png").convert_alpha()
+        self.laser_rects = []
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -65,12 +71,28 @@ class Player(pygame.sprite.Sprite):
             self.rect = self.image.get_rect(center = self.rect.center)
             self.pos.x = self.rect.x
 
+        if upgrade_type == "laser":
+            self.laser_amount += 1
+
+    def display_lasers(self):
+        self.laser_rects = []
+        if self.laser_amount > 0:
+            divider_length = self.rect.width / (self.laser_amount + 1)
+            for i in range(self.laser_amount):
+                x = self.rect.left + divider_length * (i + 1)
+                laser_rect = self.laser_surf.get_rect(midbottom = (x, self.rect.top))
+                self.laser_rects.append(laser_rect)
+                
+            for laser_rect in self.laser_rects:
+                self.display_surface.blit(self.laser_surf, laser_rect)
+
     def update(self, dt):
         self.old_rect = self.rect.copy()
         self.input()
         self.pos.x += self.direction.x * self.speed * dt
         self.rect.x = round(self.pos.x)
         self.screen_constraint()
+        self.display_lasers()
 
 class Ball(pygame.sprite.Sprite):
     def __init__(self, groups, player, blocks):

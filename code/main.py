@@ -77,12 +77,13 @@ class Game:
                     if event.key == pygame.K_SPACE:
                         self.ball.active = True
 
+            self.display_surface.blit(self.bg, (0, 0))
+
             # update the game
             self.all_sprites.update(dt)
             self.upgrade_collision()
 
             # draw the frame
-            self.display_surface.blit(self.bg, (0, 0))
             self.all_sprites.draw(self.display_surface)
             self.display_hearts()
  
