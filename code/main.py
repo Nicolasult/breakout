@@ -1,7 +1,7 @@
 import pygame, sys, time
 from settings import *
 from surfacemaker import SurfaceMaker
-from sprites import Player, Ball, Block, Upgrade
+from sprites import Player, Ball, Block, Upgrade, Projectile
 from random import choice
  
 class Game:
@@ -18,6 +18,7 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
         self.block_sprites = pygame.sprite.Group()
         self.upgrade_sprites = pygame.sprite.Group()
+        self.projectile_sprites = pygame.sprite.Group()
 
         # setup
         self.surfacemaker = SurfaceMaker()
@@ -28,8 +29,14 @@ class Game:
         # hearts
         self.heart_surf = pygame.image.load("graphics/other/heart.png").convert_alpha()
 
+        # projectile
+        self.projectile_surf = pygame.image.load("graphics/other/projectile.png").convert_alpha()
+        self.can_shoot = True
+        self.shoot_time = 0
+
+
     def create_upgrade(self, pos):
-        upgrade_type = choice(UPGRADES)
+        upgrade_type = "laser" #choice(UPGRADES)
         Upgrade(pos, upgrade_type, [self.all_sprites, self.upgrade_sprites])
 
     def create_bg(self):
@@ -60,6 +67,17 @@ class Game:
         for sprite in overlap_sprites:
             self.player.upgrade(sprite.upgrade_type)
 
+    def create_projectile(self):
+        for projectile in self.player.laser_rects:
+            Projectile(
+                projectile.midtop - pygame.math.Vector2(0, 30), 
+                self.projectile_surf, 
+                [self.all_sprites, self.projectile_sprites])
+            
+    def laser_timer(self):
+        if pygame.time.get_ticks() -  self.shoot_time >= 500:
+            self.can_shoot = True
+
     def run(self):
         last_time = time.time()
         while True:
@@ -76,12 +94,18 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         self.ball.active = True
+                        if self.can_shoot:
+                            self.create_projectile()
+                            self.can_shoot = False
+                            self.shoot_time = pygame.time.get_ticks()
 
+            # draw background
             self.display_surface.blit(self.bg, (0, 0))
 
             # update the game
             self.all_sprites.update(dt)
             self.upgrade_collision()
+            self.laser_timer()
 
             # draw the frame
             self.all_sprites.draw(self.display_surface)
